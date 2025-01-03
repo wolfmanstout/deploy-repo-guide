@@ -33,5 +33,5 @@ runs:
       run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
       shell: bash
     - name: Deploy the docs
-      run: uv run mkdocs gh-deploy --force -f generated_docs/mkdocs.yml
+      run: mkdocs gh-deploy --force -f generated_docs/mkdocs.yml
       shell: bash
