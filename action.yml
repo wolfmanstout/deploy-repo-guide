@@ -6,6 +6,10 @@ inputs:
   gemini-key:
     description: 'Gemini API key'
     required: true
+  remote-name:
+    description: 'Name of the remote repository'
+    required: false
+    default: 'origin'
 runs:
   using: "composite"
   steps:
@@ -33,5 +37,5 @@ runs:
       run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
       shell: bash
     - name: Deploy the docs
-      run: mkdocs gh-deploy --force -f generated_docs/mkdocs.yml
+      run: mkdocs gh-deploy --force --config-file generated_docs/mkdocs.yml --remote-name "${{ inputs.remote-name }}"
       shell: bash
