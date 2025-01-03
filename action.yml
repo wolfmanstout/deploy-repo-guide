@@ -14,6 +14,10 @@ inputs:
     description: "Name of the remote repository"
     required: false
     default: "origin"
+  token-budget:
+    description: "Approximate maximum number of tokens to use (0 for unlimited). Tokens are counted after each LLM call, so the actual number may be higher."
+    required: false
+    default: 0
 runs:
   using: "composite"
   steps:
@@ -39,7 +43,7 @@ runs:
     - name: Build the docs
       env:
         LLM_GEMINI_KEY: ${{ inputs.gemini-key }}
-      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
+      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github --token-budget="${{ inputs.token-budget }}"
       working-directory: ${{ inputs.directory }}
       shell: bash
     - name: Deploy the docs
