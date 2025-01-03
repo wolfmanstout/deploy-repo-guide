@@ -1,15 +1,19 @@
 # Based on https://squidfunk.github.io/mkdocs-material/publishing-your-site/#with-github-actions-material-for-mkdocs
 
-name: 'wolfmanstout/deploy-repo-guide'
-description: 'Deploy repo-guide docs to GitHub Pages'
+name: "wolfmanstout/deploy-repo-guide"
+description: "Deploy repo-guide docs to GitHub Pages"
 inputs:
   gemini-key:
-    description: 'Gemini API key'
+    description: "Gemini API key"
     required: true
-  remote-name:
-    description: 'Name of the remote repository'
+  directory:
+    description: "Directory to deploy"
     required: false
-    default: 'origin'
+    default: "."
+  remote-name:
+    description: "Name of the remote repository"
+    required: false
+    default: "origin"
 runs:
   using: "composite"
   steps:
@@ -17,10 +21,11 @@ runs:
       run: |
         git config user.name github-actions[bot]
         git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      working-directory: ${{ inputs.directory }}
       shell: bash
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: "3.11"
     - run: pip install repo-guide mkdocs mkdocs-material bleach bleach-allowlist
       shell: bash
     - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
@@ -35,7 +40,9 @@ runs:
       env:
         LLM_GEMINI_KEY: ${{ inputs.gemini-key }}
       run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
+      working-directory: ${{ inputs.directory }}
       shell: bash
     - name: Deploy the docs
       run: mkdocs gh-deploy --force --config-file generated_docs/mkdocs.yml --remote-name "${{ inputs.remote-name }}"
+      working-directory: ${{ inputs.directory }}
       shell: bash
