@@ -1,0 +1,26 @@
+name: 'wolfmanstout/deploy-repo-guide'
+description: 'Deploy repo-guide docs to GitHub Pages'
+inputs:
+  gemini-key:
+    description: 'Gemini API key'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - run: pip install repo-guide mkdocs mkdocs-material bleach bleach-allowlist
+    - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+    - uses: actions/cache@v4
+      with:
+        key: mkdocs-material-${{ env.cache_id }}
+        path: .cache
+        restore-keys: |
+          mkdocs-material-
+    - name: Build the docs
+      env:
+        LLM_GEMINI_KEY: ${{ input.gemini-key }}
+      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
+    - name: Deploy the docs
+      run: uv run mkdocs gh-deploy --force -f generated_docs/mkdocs.yml
