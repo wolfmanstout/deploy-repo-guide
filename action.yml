@@ -13,11 +13,14 @@ runs:
       run: |
         git config user.name github-actions[bot]
         git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      shell: bash
     - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     - run: pip install repo-guide mkdocs mkdocs-material bleach bleach-allowlist
+      shell: bash
     - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      shell: bash
     - uses: actions/cache@v4
       with:
         key: mkdocs-material-${{ env.cache_id }}
@@ -26,7 +29,9 @@ runs:
           mkdocs-material-
     - name: Build the docs
       env:
-        LLM_GEMINI_KEY: ${{ input.gemini-key }}
+        LLM_GEMINI_KEY: ${{ inputs.gemini-key }}
       run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github
+      shell: bash
     - name: Deploy the docs
       run: uv run mkdocs gh-deploy --force -f generated_docs/mkdocs.yml
+      shell: bash
