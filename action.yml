@@ -18,6 +18,10 @@ inputs:
     description: "Approximate maximum number of tokens to use (0 for unlimited). Tokens are counted after each LLM call, so the actual number may be higher."
     required: false
     default: 0
+  files-token-limit:
+    description: "Maximum number of tokens for total file contents in a directory (0 for unlimited). Truncate file list if exceeded."
+    required: false
+    default: 0
   google-analytics-id:
     description: "Google Analytics ID to add to the MkDocs configuration"
     required: false
@@ -47,7 +51,7 @@ runs:
     - name: Build the docs
       env:
         LLM_GEMINI_KEY: ${{ inputs.gemini-key }}
-      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github --token-budget="${{ inputs.token-budget }}" --google-analytics-id="${{ inputs.google-analytics-id }}"
+      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github --token-budget="${{ inputs.token-budget }}" --files-token-limit="${{ inputs.files-token-limit }}" --google-analytics-id="${{ inputs.google-analytics-id }}"
       working-directory: ${{ inputs.directory }}
       shell: bash
     - name: Deploy the docs
