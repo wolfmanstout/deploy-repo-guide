@@ -51,7 +51,7 @@ runs:
     - name: Build the docs
       env:
         LLM_GEMINI_KEY: ${{ inputs.gemini-key }}
-      run: repo-guide . -v --model=gemini-2.0-flash-exp --no-serve --rename-dot-github --token-budget="${{ inputs.token-budget }}" --files-token-limit="${{ inputs.files-token-limit }}" --google-analytics-id="${{ inputs.google-analytics-id }}"
+      run: repo-guide . -v --no-serve --rename-dot-github --token-budget="${{ inputs.token-budget }}" --files-token-limit="${{ inputs.files-token-limit }}" --google-analytics-id="${{ inputs.google-analytics-id }}"
       working-directory: ${{ inputs.directory }}
       shell: bash
     - name: Deploy the docs
